@@ -1,0 +1,43 @@
+plugins {
+    id 'java'
+    id 'com.gradleup.shadow' version '8.3.0'
+}
+
+group = 'org.draza'
+version = '1.0'
+
+shadowJar {
+    archiveBaseName.set('server')
+    archiveVersion.set('')
+    archiveClassifier.set('')
+    manifest {
+        attributes('Main-Class': 'org.draza.Server')
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("io.javalin:javalin-bundle:6.5.0")
+    implementation 'org.jdbi:jdbi3-core:3.49.0'
+    implementation 'com.mysql:mysql-connector-j:9.2.0'
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.mockito:mockito-core:2.1.0'
+}
+
+test {
+    jvmArgs '--add-opens', 'java.base/java.lang=ALL-UNNAMED'
+    useJUnitPlatform()
+}
+
+tasks.register('start', Exec) {
+    dependsOn shadowJar
+    commandLine 'sh', '-c', 'docker compose up --build -d'
+}
+
+tasks.register('stop', Exec) {
+    commandLine 'sh', '-c', 'docker compose down' //--remove-orphans'
+}

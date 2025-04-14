@@ -1,0 +1,35 @@
+services:
+  database:
+    image: mysql:lts
+    platform: linux/amd64
+    environment:
+      MYSQL_DATABASE: consultation
+      MYSQL_ROOT_PASSWORD: Password!23
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 5s
+      retries: 5
+      start_period: 20s
+      timeout: 5s
+  flyway-init:
+    image: flyway/flyway:11-alpine
+    platform: linux/amd64
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - ./sql:/flyway/sql
+    command: -url='jdbc:mysql://database:3306/consultation?allowPublicKeyRetrieval=true&useSSL=false' -X -user=root -password=Password!23 migrate
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      flyway-init:
+        condition: service_completed_successfully
+    ports:
+      - "8088:8088"
+    env_file:
+      - .env
