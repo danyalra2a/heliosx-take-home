@@ -5,8 +5,6 @@ import org.draza.consultation.Controller;
 import org.draza.consultation.Repository;
 import org.draza.consultation.Service;
 
-import java.util.Map;
-
 import static io.javalin.apibuilder.ApiBuilder.get;
 import static io.javalin.apibuilder.ApiBuilder.post;
 import static io.javalin.apibuilder.ApiBuilder.path;
