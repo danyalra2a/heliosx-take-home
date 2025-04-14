@@ -19,6 +19,7 @@ public class Service {
   public List<Question> getQuestionsForConsultation(int consultationId) {
     try {
       return repository.getQuestionsForConsultation(consultationId);
+
     } catch (Exception ex) {
       LOGGER.error(
           "Server error when accessing questions for consultation with id: {}", consultationId, ex);
@@ -35,6 +36,7 @@ public class Service {
       repository.updateSubmissionStatus(submissionId, status);
 
       return submissionId;
+
     } catch (Exception ex) {
       LOGGER.error(
           "Server error when posting submission for consultation with id: {}", consultationId, ex);
@@ -54,6 +56,7 @@ public class Service {
         case ConsultationStatus.APPROVED ->
             new ConsultationResult(status, "Your account will be charged soon.");
       };
+
     } catch (Exception ex) {
       LOGGER.error(
           "Server error when getting submission status for submission with id: {}", submissionId, ex);

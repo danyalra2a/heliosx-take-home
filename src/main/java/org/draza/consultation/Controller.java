@@ -21,12 +21,15 @@ public class Controller {
 
   public void getConsultationQuestions(Context context) {
     String consultationId = context.pathParam("consultationId");
+
     try {
       context.json(service.getQuestionsForConsultation(Integer.parseInt(consultationId)));
+
     } catch (NumberFormatException ex) {
       String message = "Invalid consultationId passed: " + consultationId;
       LOGGER.warn(message, ex);
       throw exceptionResponse(400,message, ex);
+
     } catch (ServerError ex) {
       throw exceptionResponse(500,"Error fetching questions for consultation", ex);
     }
@@ -34,15 +37,19 @@ public class Controller {
 
   public void postConsultationAnswers(Context context) {
     String consultationId = context.pathParam("consultationId");
+
     try {
       AnsweredQuestions answers = context.bodyAsClass(AnsweredQuestions.class);
+
       Integer submissionId =
           service.postConsultationAnswers(Integer.parseInt(consultationId), answers);
       context.status(200).json(Map.of("submissionId", submissionId));
+
     } catch (NumberFormatException ex) {
       String message = "Invalid consultationId passed: " + consultationId;
       LOGGER.warn(message, ex);
       throw exceptionResponse(400,message, ex);
+
     } catch (ServerError ex) {
       throw exceptionResponse(500,"Failed to submit answers for consultation", ex);
     }
@@ -50,13 +57,16 @@ public class Controller {
 
   public void getConsultationStatus(Context context) {
     String submissionId = context.pathParam("submissionId");
+
     try {
       ConsultationResult result = service.getConsultationResult(Integer.parseInt(submissionId));
       context.status(200).json(result);
+
     } catch (NumberFormatException ex) {
       String message = "Invalid submissionId passed: " + submissionId;
       LOGGER.warn(message, ex);
       throw exceptionResponse(400,message, ex);
+
     } catch (ServerError ex) {
       throw exceptionResponse(500,"Failed to get status", ex);
     }
